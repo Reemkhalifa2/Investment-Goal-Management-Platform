@@ -1,9 +1,9 @@
 package com.example.InvestmentGoalManagementPlatform.service;
 
 import com.example.InvestmentGoalManagementPlatform.DTO.AiPlanResponseDTO;
-import com.example.InvestmentGoalManagementPlatform.entity.Goal;
+import com.example.InvestmentGoalManagementPlatform.entity.FinancialGoal;
 import com.example.InvestmentGoalManagementPlatform.entity.InvestmentPlan;
-import com.example.InvestmentGoalManagementPlatform.repository.GoalRepository;
+import com.example.InvestmentGoalManagementPlatform.repository.FinancialGoalRepository;
 import com.example.InvestmentGoalManagementPlatform.repository.InvestmentPlanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,20 +18,20 @@ import java.time.Period;
 public class InvestmentPlanService {
     private final InvestmentPlanRepository investmentPlanRepository;
     private final AiService aiService;
-    private final FinancialGoalService financialGoalService;
+    private final FinancialGoalRepository financialGoalRepository;
 
     @Autowired
-    public InvestmentPlanService(AiService aiService, FinancialGoalService financialGoalService, InvestmentPlanRepository investmentPlanRepository) {
+    public InvestmentPlanService(AiService aiService, FinancialGoalRepository financialGoalRepository, InvestmentPlanRepository investmentPlanRepository) {
         this.aiService = aiService;
-        this.financialGoalService = financialGoalService;
         this.investmentPlanRepository = investmentPlanRepository;
+        this.financialGoalRepository = financialGoalRepository;
     }
 
 
     @Transactional
     public InvestmentPlan generateAndSavePlanForGoal(Integer goalId) {
         // 1. Fetch User Goal
-        FinancialGoalService goal = financialGoalService.getFinancialGoalById(goalId);
+        FinancialGoal goal = financialGoalRepository.findGoalById(goalId);
 
 
         // 2. Calculate remaining months to target date

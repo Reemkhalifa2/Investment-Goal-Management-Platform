@@ -21,6 +21,8 @@ public interface FinancialGoalRepository extends JpaRepository<FinancialGoal, In
     @Query("SELECT f FROM FinancialGoal f " + "WHERE f.status = :status AND f.isActive = true")
     List<FinancialGoal> findByStatus(@Param("status") String status);
 
+    @Query("SELECT f FROM FinancialGoal f WHERE f.id = :id AND f.isActive = true")
+    FinancialGoal findGoalById(@Param("id") Integer id);
 
 
 }
