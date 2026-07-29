@@ -7,9 +7,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FinancialGoalRepository extends JpaRepository<FinancialGoal, Integer> {
+
     @Query("SELECT f FROM FinancialGoal f " + "WHERE f.user.id = :userId AND f.isActive = true")
     List<FinancialGoal> findByUserId(@Param("userId") Integer userId);
 
@@ -18,4 +20,7 @@ public interface FinancialGoalRepository extends JpaRepository<FinancialGoal, In
 
     @Query("SELECT f FROM FinancialGoal f " + "WHERE f.status = :status AND f.isActive = true")
     List<FinancialGoal> findByStatus(@Param("status") String status);
+
+
+
 }
