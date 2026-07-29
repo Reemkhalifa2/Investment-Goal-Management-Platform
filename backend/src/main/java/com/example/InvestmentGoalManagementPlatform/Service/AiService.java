@@ -20,6 +20,7 @@ public class AiService {
                 .content();
     }
 
+
     public AiPlanResponseDTO generateInvestmentPlan(String goalName, Double targetAmount, Double currentAmount, int months) {
         String prompt = String.format("""
             You are a expert financial planner specializing in the Omani and GCC markets (OMR currency).

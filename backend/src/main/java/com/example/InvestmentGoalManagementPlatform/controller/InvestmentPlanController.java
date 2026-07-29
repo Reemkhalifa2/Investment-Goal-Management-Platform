@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/user/plans")
+@RequestMapping("/api/user/plans")
 public class InvestmentPlanController {
     @Autowired
     public InvestmentPlanController(InvestmentPlanService investmentPlanService) {
