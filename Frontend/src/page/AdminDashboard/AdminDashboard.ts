@@ -1,169 +1,90 @@
-const API_BASE_URL1 = "http://localhost:3000";
-const ADMIN_OVERVIEW_ENDPOINT = `${API_BASE_URL}/api/admin/overview`;
-
-
-type FeedStatus = "Healthy" | "Degraded" | "Down";
-
-interface AssetCategory {
-  label: string;
-  assetCount: number;
-  percentOfMax: number; 
+// =============================
+// Interfaces
+// =============================
+interface AdminDashboardResponse {
+  totalUsers: number;
+  activeUsers: number;
+  totalInvestments: number;
+  activeInvestments: number;
+  totalInvestmentAmount: number;
+  totalCurrentValue: number;
+  totalProfit: number;
 }
 
-interface MarketFeed {
-  name: string;
-  updatedLabel: string; 
-}
+// =============================
+// API Configuration
+// =============================
+const API_URL: string = "http://localhost:8080/api/admin/dashboard";
 
-interface AdminOverviewResponse {
-  user: {
-    name: string;
-    role: string;
-    initials: string;
-  };
-  stats: {
-    totalUsers: number;
-    totalUsersDeltaLabel: string;
-    totalAssets: number;
-    totalAssetsDeltaLabel: string;
-    activeAssets: number;
-    activeAssetsPercentLabel: string;
-    categoriesCount: number;
-    categoriesListLabel: string;
-  };
-  categories: AssetCategory[];
-  marketStatus: {
-    overallStatus: FeedStatus;
-    feeds: MarketFeed[];
-  };
-}
-
-// ---- DOM references ----
-
-const topbarDateEl1 = document.getElementById("topbarDate") as HTMLDivElement;
-const userNameEl1 = document.getElementById("userName") as HTMLDivElement;
-const userRoleEl1 = document.getElementById("userRole") as HTMLDivElement;
-const userAvatarEl1 = document.getElementById("userAvatar") as HTMLDivElement;
-
-const totalUsersEl = document.getElementById("totalUsers") as HTMLDivElement;
-const totalUsersDeltaEl = document.getElementById("totalUsersDelta") as HTMLDivElement;
-const totalAssetsEl = document.getElementById("totalAssets") as HTMLDivElement;
-const totalAssetsDeltaEl = document.getElementById("totalAssetsDelta") as HTMLDivElement;
-const activeAssetsEl = document.getElementById("activeAssets") as HTMLDivElement;
-const activeAssetsPercentEl = document.getElementById("activeAssetsPercent") as HTMLDivElement;
-const categoriesCountEl = document.getElementById("categoriesCount") as HTMLDivElement;
-const categoriesListEl = document.getElementById("categoriesList") as HTMLDivElement;
-
-const categoryBarsEl = document.getElementById("categoryBars") as HTMLDivElement;
-const overallHealthPillEl = document.getElementById("overallHealthPill") as HTMLSpanElement;
-const feedListEl = document.getElementById("feedList") as HTMLUListElement;
-
-// ---- Helpers ----
-
-function formatTopbarDate8(date: Date): string {
-  return date.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-// ---- API call ----
-
-async function fetchAdminOverview(): Promise<AdminOverviewResponse> {
-  const response = await fetch(ADMIN_OVERVIEW_ENDPOINT, {
+// =============================
+// Fetch & Render Logic
+// =============================
+async function fetchAdminOverview(): Promise<AdminDashboardResponse> {
+  const response = await fetch(API_URL, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
-  if (!response.ok) throw new Error(`Server responded with ${response.status}`);
-  return (await response.json()) as AdminOverviewResponse;
+
+  if (!response.ok) {
+    throw new Error(`HTTP Error: ${response.status}`);
+  }
+
+  return await response.json();
 }
 
-// ---- Rendering ----
+function renderStats(data: AdminDashboardResponse): void {
+  const totalUsersEl = document.getElementById("totalUsers");
+  const totalUsersDeltaEl = document.getElementById("totalUsersDelta");
+  const totalAssetsEl = document.getElementById("totalAssets");
+  const totalAssetsDeltaEl = document.getElementById("totalAssetsDelta");
+  const activeAssetsEl = document.getElementById("activeAssets");
+  const activeAssetsPercentEl = document.getElementById("activeAssetsPercent");
+  const categoriesCountEl = document.getElementById("categoriesCount");
+  const categoriesListEl = document.getElementById("categoriesList");
 
-function renderUser10(user: AdminOverviewResponse["user"]): void {
-  userNameEl.textContent = user.name;
-  userRoleEl.textContent = user.role;
-  userAvatarEl.textContent = user.initials;
+  if (totalUsersEl) totalUsersEl.textContent = data.totalUsers.toLocaleString();
+  if (totalUsersDeltaEl) totalUsersDeltaEl.textContent = `${data.activeUsers} Active Users`;
+
+  if (totalAssetsEl) totalAssetsEl.textContent = data.totalInvestments.toString();
+  if (totalAssetsDeltaEl) totalAssetsDeltaEl.textContent = `Amount: $${data.totalInvestmentAmount.toFixed(2)}`;
+
+  if (activeAssetsEl) activeAssetsEl.textContent = data.activeInvestments.toString();
+  if (activeAssetsPercentEl) activeAssetsPercentEl.textContent = `Current Value: $${data.totalCurrentValue.toFixed(2)}`;
+
+  if (categoriesCountEl) categoriesCountEl.textContent = `$${data.totalProfit.toFixed(2)}`;
+  if (categoriesListEl) categoriesListEl.textContent = "Total Profit";
 }
 
-function renderStats1(stats: AdminOverviewResponse["stats"]): void {
-  totalUsersEl.textContent = stats.totalUsers.toLocaleString();
-  totalUsersDeltaEl.textContent = stats.totalUsersDeltaLabel;
+async function init(): Promise<void> {
+  const topbarDateEl = document.getElementById("topbarDate");
+  const userNameEl = document.getElementById("userName");
+  const userRoleEl = document.getElementById("userRole");
+  const userAvatarEl = document.getElementById("userAvatar");
 
-  totalAssetsEl.textContent = String(stats.totalAssets);
-  totalAssetsDeltaEl.textContent = stats.totalAssetsDeltaLabel;
-
-  activeAssetsEl.textContent = String(stats.activeAssets);
-  activeAssetsPercentEl.textContent = stats.activeAssetsPercentLabel;
-
-  categoriesCountEl.textContent = String(stats.categoriesCount);
-  categoriesListEl.textContent = stats.categoriesListLabel;
-}
-
-function renderCategoryBars(categories: AssetCategory[]): void {
-  categoryBarsEl.innerHTML = "";
-  categories.forEach((category) => {
-    const div = document.createElement("div");
-    div.className = "category-bar-item";
-    div.innerHTML = `
-      <div class="category-bar-header">
-        <span class="category-bar-label">${category.label}</span>
-        <span class="category-bar-count">${category.assetCount} assets</span>
-      </div>
-      <div class="category-bar-track">
-        <div class="category-bar-fill" style="width: ${category.percentOfMax}%"></div>
-      </div>
-    `;
-    categoryBarsEl.appendChild(div);
-  });
-}
-
-function renderMarketStatus(marketStatus: AdminOverviewResponse["marketStatus"]): void {
-  overallHealthPillEl.textContent = marketStatus.overallStatus;
-
-  feedListEl.innerHTML = "";
-  marketStatus.feeds.forEach((feed) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <span class="feed-name">${feed.name}</span>
-      <span class="feed-updated">${feed.updatedLabel}</span>
-    `;
-    feedListEl.appendChild(li);
-  });
-}
-
-// ---- Sidebar navigation (active state) ----
-
-function setupNav8(): void {
-  const navItems = document.querySelectorAll<HTMLAnchorElement>(".nav-item");
-  navItems.forEach((item) => {
-    item.addEventListener("click", (event: MouseEvent) => {
-      if (item.getAttribute("href") !== "#") return; // allow real page links to navigate
-      event.preventDefault();
-      navItems.forEach((el) => el.classList.remove("active"));
-      item.classList.add("active");
+  if (topbarDateEl) {
+    topbarDateEl.textContent = new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
     });
-  });
-}
-
-// ---- Init ----
-
-async function init1(): Promise<void> {
-  topbarDateEl.textContent = formatTopbarDate(new Date());
-  setupNav();
+  }
 
   try {
     const data = await fetchAdminOverview();
-    renderUser(data.user);
-    renderStats1(data.stats);
-    renderCategoryBars(data.categories);
-    renderMarketStatus(data.marketStatus);
-  } catch (err) {
-    console.error("Failed to load admin overview data:", err);
-    userNameEl.textContent = "—";
-    userRoleEl.textContent = "";
+    renderStats(data);
+
+    if (userNameEl) userNameEl.textContent = "Admin";
+    if (userRoleEl) userRoleEl.textContent = "Administrator";
+    if (userAvatarEl) userAvatarEl.textContent = "AD";
+  } catch (error) {
+    console.error("Failed to load admin dashboard:", error);
+    if (userNameEl) userNameEl.textContent = "Error Loading Data";
   }
 }
 
-init();
+// Start application when DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+  init();
+});
