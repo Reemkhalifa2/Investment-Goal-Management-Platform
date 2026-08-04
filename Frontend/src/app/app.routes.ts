@@ -6,8 +6,15 @@ import { UserDashboard } from './page/user-dashboard/user-dashboard';
 import { FinancialProfile } from './page/financial-profile/financial-profile';
 import { AdminDashboard } from './page/dashboard/dashboard';
 import { MainLayout } from './layout/main-layout/main-layout';
+<<<<<<< HEAD
 import {AssetManagement} from './page/asset-management/asset-management';
 import {investmentGoal} from './page/investmentGoal/investmentGoal';
+=======
+import { AssetManagement } from './page/asset-management/asset-management';
+import { FinancialGoal } from './page/investment-goal/investment-goal';
+import { authGuard } from './authGuard'; // <-- Add this
+
+>>>>>>> c77d725ff7104984766e81c3ee35687b2364b2f3
 export const routes: Routes = [
   {
     path: '',
@@ -21,6 +28,7 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayout,
+    canActivate: [authGuard], // <-- Protect all child routes
     children: [
       {
         path: 'dashboard',
@@ -44,6 +52,10 @@ export const routes: Routes = [
         component: investmentGoal
       },
 
+      {
+        path: 'financial-goal',
+        component: FinancialGoal
+      },
       {
         path: '',
         redirectTo: 'dashboard',

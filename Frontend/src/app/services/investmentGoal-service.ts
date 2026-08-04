@@ -3,6 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { investmentGoalRequest, investmentGoalResponse } from '../models/investmentGoal-models';
+import {
+  investmentGoalRequest,
+  investmentGoalResponse
+} from '../models/investmentGoal-models';
+
 
 @Injectable({
   providedIn: 'root',
