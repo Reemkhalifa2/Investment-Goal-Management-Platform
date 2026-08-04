@@ -7,7 +7,7 @@ import { investmentGoalService } from '../../services/investmentGoal-service';
 import { investmentGoalResponse, investmentGoalRequest } from '../../models/investmentGoal-models';
 
 @Component({
-  selector: 'app-investmentGoal',
+  selector: 'app-investment-goal',
   standalone: true,
   imports: [
     CommonModule,
@@ -16,14 +16,14 @@ import { investmentGoalResponse, investmentGoalRequest } from '../../models/inve
   templateUrl: './investmentGoal.html',
   styleUrl: './investmentGoal.css'
 })
-export class GoalCalculator implements OnInit {
+export class investmentGoal implements OnInit {
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly financialGoalService = inject(investmentGoalService);
 
   saving = false;
   loadingGoals = true;
-  savedGoals: investmentGoalService[] = [];
+  savedGoals: investmentGoalResponse[] = [];
 
   toastMessage = '';
   toastIsError = false;
@@ -49,7 +49,7 @@ export class GoalCalculator implements OnInit {
     this.loadingGoals = true;
 
     this.financialGoalService
-      .list()
+      .list(this.userId)
       .pipe(
         finalize(() => {
           this.loadingGoals = false;
@@ -57,7 +57,7 @@ export class GoalCalculator implements OnInit {
       )
       .subscribe({
         next: goals => {
-          this.saveGoal = goals;
+          this.savedGoals = goals;
         },
 
         error: error => {
@@ -217,7 +217,7 @@ export class GoalCalculator implements OnInit {
   // ---- Save ----
 
   saveGoal(): void {
-    const { salary, expenses, currentSavings, targetAmount, contribution } = this.values;
+    const { currentSavings, targetAmount } = this.values;
 
     const request: investmentGoalRequest = {
       goalName: 'Investment goal',

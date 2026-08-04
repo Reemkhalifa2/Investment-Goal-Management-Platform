@@ -1,4 +1,28 @@
-<aside class="sidebar">
+<!-- Mobile-only toggle button -->
+<button
+  type="button"
+  class="menu-toggle"
+  (click)="toggleSidebar()"
+  aria-label="Toggle menu"
+>
+  @if (isOpen) {
+    ✕
+  } @else {
+    ☰
+  }
+</button>
+
+<!-- Mobile-only backdrop, closes the menu on tap -->
+<div
+  class="backdrop"
+  [class.show]="isOpen"
+  (click)="closeSidebar()"
+></div>
+
+<aside
+  class="sidebar"
+  [class.open]="isOpen"
+>
 
   <div class="sidebar-brand">
     <div class="brand-icon">
@@ -36,6 +60,7 @@
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
       class="nav-item"
+      (click)="closeSidebar()"
     >
       <svg
         width="18"
@@ -91,6 +116,7 @@
       routerLink="/financial-profile"
       routerLinkActive="active"
       class="nav-item"
+      (click)="closeSidebar()"
     >
       <svg
         width="18"
@@ -121,6 +147,7 @@
       routerLink="/goals"
       routerLinkActive="active"
       class="nav-item"
+      (click)="closeSidebar()"
     >
       <svg
         width="18"
@@ -159,6 +186,7 @@
       routerLink="/investment-plan"
       routerLinkActive="active"
       class="nav-item"
+      (click)="closeSidebar()"
     >
       <svg
         width="18"
@@ -180,6 +208,7 @@
       routerLink="/portfolio"
       routerLinkActive="active"
       class="nav-item"
+      (click)="closeSidebar()"
     >
       <svg
         width="18"
@@ -211,6 +240,7 @@
       routerLink="/history"
       routerLinkActive="active"
       class="nav-item"
+      (click)="closeSidebar()"
     >
       <svg
         width="18"
@@ -250,6 +280,7 @@
         routerLink="/admin-dashboard"
         routerLinkActive="active"
         class="nav-item"
+        (click)="closeSidebar()"
       >
         <span>Admin overview</span>
       </a>
@@ -258,6 +289,7 @@
         routerLink="/admin-assets"
         routerLinkActive="active"
         class="nav-item"
+        (click)="closeSidebar()"
       >
         <span>Assets</span>
       </a>
@@ -266,6 +298,7 @@
         routerLink="/market-data"
         routerLinkActive="active"
         class="nav-item"
+        (click)="closeSidebar()"
       >
         <span>Market data</span>
       </a>

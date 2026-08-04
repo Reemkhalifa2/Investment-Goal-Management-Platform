@@ -24,8 +24,19 @@ export class Sidebar {
   private readonly authService = inject(Auth);
   private readonly router = inject(Router);
 
+  /** Whether the sidebar is open on mobile (ignored on desktop, always visible there). */
+  isOpen = false;
+
   get isAdmin(): boolean {
     return this.authService.isAdmin();
+  }
+
+  toggleSidebar(): void {
+    this.isOpen = !this.isOpen;
+  }
+
+  closeSidebar(): void {
+    this.isOpen = false;
   }
 
   logout(): void {
