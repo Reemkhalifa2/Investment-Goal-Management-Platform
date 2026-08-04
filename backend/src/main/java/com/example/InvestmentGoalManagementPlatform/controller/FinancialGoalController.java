@@ -21,22 +21,18 @@ public class FinancialGoalController {
         this.financialGoalService = financialGoalService;
     }
 
-    // 1. إنشاء هدف مالي جديد
     @PostMapping
     public ResponseEntity<FinancialGoalDTO> createFinancialGoal(@RequestBody FinancialGoalDTO dto) {
         FinancialGoalDTO createdGoal = financialGoalService.createFinancialGoal(dto);
         return new ResponseEntity<>(createdGoal, HttpStatus.CREATED);
     }
 
-    // 2. جلب هدف مالي عن طريق الـ ID
     @GetMapping("/{goalId}")
     public ResponseEntity<FinancialGoalDTO> getFinancialGoalById(@PathVariable Integer goalId) {
         FinancialGoalDTO goal = financialGoalService.getFinancialGoalById(goalId);
         return ResponseEntity.ok(goal);
     }
 
-    // 3. جلب الأهداف المالية حسب المستخدم و/أو الحالة (Query Parameters)
-    // أمثلة:
     // /api/financial-goals?userId=1
     // /api/financial-goals?userId=1&status=ACTIVE
     // /api/financial-goals?status=ACHIEVED
@@ -54,13 +50,12 @@ public class FinancialGoalController {
         } else if (status != null) {
             goals = financialGoalService.getFinancialGoalsByStatus(status);
         } else {
-            return ResponseEntity.badRequest().build(); // أو جلب كل الأهداف إن كانت الخدمة تدعم ذلك
+            return ResponseEntity.badRequest().build();
         }
 
         return ResponseEntity.ok(goals);
     }
 
-    // 4. تحديث هدف مالي بالكامل
     @PutMapping("/{goalId}")
     public ResponseEntity<FinancialGoalDTO> updateFinancialGoal(
             @PathVariable Integer goalId,
@@ -69,7 +64,7 @@ public class FinancialGoalController {
         return ResponseEntity.ok(updatedGoal);
     }
 
-    // 5. إضافة مساهمة مالية للهدف (Log Contribution)
+    // (Log Contribution)
     // JSON Request Body Example: { "amount": 50.0 }
     @PostMapping("/{goalId}/contribute")
     public ResponseEntity<FinancialGoalDTO> addContribution(
@@ -83,7 +78,7 @@ public class FinancialGoalController {
         return ResponseEntity.ok(updatedGoal);
     }
 
-    // 6. حذف هدف مالي (Soft Delete)
+    //  (Soft Delete)
     @DeleteMapping("/{goalId}")
     public ResponseEntity<Void> deleteFinancialGoal(@PathVariable Integer goalId) {
         financialGoalService.deleteFinancialGoal(goalId);

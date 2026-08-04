@@ -7,6 +7,7 @@ import { FinancialProfile } from './page/financial-profile/financial-profile';
 import { AdminDashboard } from './page/dashboard/dashboard';
 import { MainLayout } from './layout/main-layout/main-layout';
 import {AssetManagement} from './page/asset-management/asset-management';
+import {investmentGoal} from './page/investmentGoal/investmentGoal';
 export const routes: Routes = [
   {
     path: '',
@@ -37,6 +38,12 @@ export const routes: Routes = [
         path: 'assets',
         component: AssetManagement
       },
+
+      {
+        path: 'investmentGoal',
+        component: investmentGoal
+      },
+
       {
         path: '',
         redirectTo: 'dashboard',
